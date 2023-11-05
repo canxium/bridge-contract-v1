@@ -3,8 +3,8 @@ import { ethers } from "hardhat";
 async function main() {
 
   const lock = await ethers.deployContract(
-    "SideChainBridge",
-    ["0x4C8414F37793A01E5E391642E75f9Ed8e7B63C49", "0xe4084F223BE4FF34eD452e24a86bF10ffe3fb0B7"],
+    "CanxiumBridge",
+    ["0x4C8414F37793A01E5E391642E75f9Ed8e7B63C49", "0xF26417eCf894678B58feda327DC01A60041856fB", "0xF26417eCf894678B58feda327DC01A60041856fB"],
     {
       maxFeePerGas: 280000000000,
       maxPriorityFeePerGas: 1000000000
