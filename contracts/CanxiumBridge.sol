@@ -41,7 +41,7 @@ contract CanxiumBridge is AccessControl, Pausable {
 
     // user events
     event TransferToken(address token, address receiver, uint amount, uint32 chainId);
-
+    event Deposit(address token, uint amount);
     event Claim(address indexed token, address indexed receiver, uint indexed amout, bytes32 txHash);
     event Release(uint indexed chainId, bytes32 indexed txHash, address token, address receiver, uint amount);
 
@@ -66,12 +66,14 @@ contract CanxiumBridge is AccessControl, Pausable {
     ) public payable whenNotPaused() {
         // transfer cau
         uint maxBalance = 0;
+        require(amount > 0, "You have to transfer positive amount");
         if (token == address(0)) {
-            require(msg.value > 0, "You have to deposit a positive amount");
+            require(msg.value == amount, "You have to deposit correct amount");
             maxBalance = address(this).balance * maxHotBalancePercent / 100;
         } else {
             require(msg.value == 0, "Deposit native coin for this token transfer is not allowed");
             // transfer the token amount back to this contract address
+            // reverts if the requested amount is greater than the permitted signed amount or out of balance
             permit2.permitTransferFrom(
                 ISignatureTransfer.PermitTransferFrom({
                     permitted: ISignatureTransfer.TokenPermissions({
@@ -140,6 +142,8 @@ contract CanxiumBridge is AccessControl, Pausable {
         if (hotBalances[token] > maxBalance) {
             hotBalances[token] = maxBalance;
         }
+
+        emit Deposit(token, amount);
     }
 
     // return hot balance of a token
