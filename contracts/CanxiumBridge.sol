@@ -36,8 +36,8 @@ contract CanxiumBridge is AccessControl, Pausable {
     // 0x000000000022D473030F116dDEE9F6B43aC78BA3: Ethereum
     ISignatureTransfer private permit2 = ISignatureTransfer(0xF80c91442D3EF66632958C0d395667075FC82fB0);
     
-    bytes32 public constant OPERATOR_ROLE = keccak256("OPERATOR_ROLE");
-    bytes32 public constant SAFEGUARD_ROLE = keccak256("SAFEGUARD_ROLE");
+    bytes32 public constant OPERATOR_ROLE = keccak256("OPERATOR_ROLE"); // 0x97667070c54ef182b0f5858b034beac1b6f3089aa2d3188bb1e8929f4fa9b929
+    bytes32 public constant SAFEGUARD_ROLE = keccak256("SAFEGUARD_ROLE"); // 0x0c5b83b9feb73d68b25ce93301772ded252fe077aea2bfbfbd3f0f9825d3f5b5
 
     // user events
     event TransferToken(address token, address receiver, uint amount, uint32 chainId);
@@ -206,6 +206,7 @@ contract CanxiumBridge is AccessControl, Pausable {
     function withdraw(address token) public onlyRole(DEFAULT_ADMIN_ROLE) {
         if (token == address(0)) {
             payable(msg.sender).transfer(address(this).balance);
+            return;
         }
 
         IERC20 iToken = IERC20(token);
